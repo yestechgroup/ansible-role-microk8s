@@ -1,0 +1,15 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: ping node1
+      ansible.builtin.command:
+        cmd: ping 192.168.0.1 -c 10
+      changed_when: false
+
+    - name: ping node2
+      ansible.builtin.command:
+        cmd: ping 192.168.0.2 -c 10
+      changed_when: false
+...

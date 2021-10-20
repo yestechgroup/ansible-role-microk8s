@@ -1,0 +1,5 @@
+ansible
+ansible-lint
+molecule-vagrant!=0.6.3
+pre-commit
+python-vagrant

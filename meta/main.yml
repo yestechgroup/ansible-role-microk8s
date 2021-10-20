@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: microk8s
+  author: ckaserer
+  namespace: gepaplexx
+  description: >-
+    Install and configure microk8s - the smallest,
+    simplest, pure production K8s on debian based systems.
+  license: MIT
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+  galaxy_tags:
+    - container
+    - development
+    - devops
+    - k8s
+    - kubernetes
+    - microk8s
+    - system
+dependencies: []
+...

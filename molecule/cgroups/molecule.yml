@@ -1,0 +1,18 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: instance
+    box: ubuntu/focal64
+    memory: 4096
+    cpus: 2
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      verbosity: 1
+...

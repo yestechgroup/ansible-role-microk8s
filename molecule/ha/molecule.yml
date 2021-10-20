@@ -1,0 +1,36 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+platforms:
+  - name: node1
+    box: ubuntu/focal64
+    memory: 4096
+    cpus: 2
+    interfaces:
+      - network_name: private_network
+        type: static
+        ip: 192.168.0.1
+  - name: node2
+    box: ubuntu/focal64
+    memory: 4096
+    cpus: 2
+    interfaces:
+      - network_name: private_network
+        type: static
+        ip: 192.168.0.2
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      verbosity: 1
+  inventory:
+    hosts:
+      microk8s_HA:
+        hosts:
+          node1: {}
+          node2: {}
+...

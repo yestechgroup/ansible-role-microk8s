@@ -1,0 +1,82 @@
+---
+- name: add user to group
+  ansible.builtin.user:
+    name: "{{ microk8s_user }}"
+    groups: microk8s
+    append: true
+  with_items: '{{ microk8s_users }}'
+  loop_control:
+    loop_var: microk8s_user
+    label: '{{ microk8s_user }}'
+  register: microk8s_add_user_to_group
+  tags:
+    - microk8s
+    - microk8s.user
+    - microk8s.user.group
+
+- name: Create .kube folder for the user
+  ansible.builtin.file:
+    path: "{{ microk8s_user.home }}/.kube"
+    state: directory
+    owner: '{{ microk8s_user.name }}'
+    group: '{{ microk8s_user.name }}'
+    mode: 0750
+  with_items: '{{ microk8s_add_user_to_group.results }}'
+  loop_control:
+    loop_var: microk8s_user
+    label: '{{ microk8s_user.name }}'
+  tags:
+    - microk8s
+    - microk8s.kube
+    - microk8s.kube.dir
+
+- name: create kubectl config
+  ansible.builtin.shell:
+    cmd: microk8s config > {{ microk8s_user.home }}/.kube/config
+  args:
+    executable: /bin/bash
+    creates: "{{ microk8s_user.home }}/.kube/config"
+  environment:
+    PATH: '${PATH}:/snap/bin/'
+  with_items: '{{ microk8s_add_user_to_group.results }}'
+  loop_control:
+    loop_var: microk8s_user
+    label: '{{ microk8s_user.name }}'
+  tags:
+    - molecule-idempotence-notest
+    - microk8s
+    - microk8s.kube
+    - microk8s.kube.config
+
+- name: reaffirm permission on config directory
+  ansible.builtin.file:
+    path: "{{ microk8s_user.home }}/.kube"
+    state: directory
+    owner: '{{ microk8s_user.name }}'
+    group: '{{ microk8s_user.name }}'
+    recurse: true
+  with_items: '{{ microk8s_add_user_to_group.results }}'
+  loop_control:
+    loop_var: microk8s_user
+    label: '{{ microk8s_user.name }}'
+  tags:
+    - microk8s
+    - microk8s.kube
+    - microk8s.kube.permission
+
+- name: reaffirm permission on config file
+  ansible.builtin.file:
+    path: "{{ microk8s_user.home }}/.kube/config"
+    state: file
+    owner: '{{ microk8s_user.name }}'
+    group: '{{ microk8s_user.name }}'
+    mode: 0600
+  with_items: '{{ microk8s_add_user_to_group.results }}'
+  loop_control:
+    loop_var: microk8s_user
+    label: '{{ microk8s_user.name }}'
+  tags:
+    - microk8s
+    - microk8s.kube
+    - microk8s.kube.permission
+...

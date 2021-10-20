@@ -1,0 +1,21 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Create /boot/firmware directory
+      ansible.builtin.file:
+        path: /boot/firmware
+        state: directory
+        recurse: true
+        mode: 0755
+
+    - name: Create /boot/firmware/cmdline.txt
+      ansible.builtin.copy:
+        dest: /boot/firmware/cmdline.txt
+        content: >-
+          net.ifnames=0 dwc_otg.lpm_enable=0 console=serial0,115200
+          console=tty1 root=LABEL=writable rootfstype=ext4
+          elevator=deadline rootwait fixrtc
+        mode: 0755
+...

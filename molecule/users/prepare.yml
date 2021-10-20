@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+  - name: Add ckaserer as user
+    ansible.builtin.user:
+      name: ckaserer
+      shell: /bin/bash
+      append: true
+...

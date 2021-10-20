@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  roles:
+    - role: gepaplexx.microk8s
+      vars:
+        microk8s_plugins:
+          dns: true
+          helm3: true
+          registry: true
+...
