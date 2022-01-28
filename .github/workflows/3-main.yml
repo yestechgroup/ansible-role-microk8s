@@ -76,7 +76,7 @@ jobs:
 
   molecule:
     name: Molecule
-    runs-on: macos-10.15
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -86,13 +86,16 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install Molecule Dependencies
-        run: pip install -r requirements.txt
-
       - name: Run Molecule Tests
-        run: molecule test --all
+        uses: bonddim/action-ansible-molecule@stable
+        with:
+          moleculle-command-args: --all
+          pip-requirements-file: requirements.txt
+          molecule-working-dir: ${{ github.workspace }}
+          collection-dir: ${{ github.workspace }}
         env:
           PY_COLORS: 1
+          ANSIBLE_VERSION: stable-2.10
           ANSIBLE_FORCE_COLOR: 1
 
   release:
