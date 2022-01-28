@@ -14,20 +14,11 @@
     - microk8s.ha
     - microk8s.ha.hosts
 
-- name: Find the designated host
-  ansible.builtin.set_fact:
-    microk8s_designated_host: '{{ (groups[microk8s_group_ha]|sort)[0] }}'
-  tags:
-    - always
-    - microk8s
-    - microk8s.ha
-
 - block:
     - name: Waiting for microk8s to be ready on microk8s host master
       ansible.builtin.command:
         cmd: microk8s status --wait-ready
-      delegate_to: "{{ microk8s_designated_host }}"
-      delegate_facts: true
+      when: is_master is defined and ( is_master | bool)
       changed_when: false
 
     - name: Get the microk8s join command from the microk8s master
@@ -35,16 +26,14 @@
         cmd: >-
           microk8s add-node |
           grep -E -m1 'microk8s join {{ microk8s_ip_regex_ha }}'
-      delegate_to: "{{ microk8s_designated_host }}"
-      delegate_facts: true
+      when: is_master is defined and ( is_master | bool)
       changed_when: false
       register: microk8s_join_command
 
     - name: Get microk8s cluster nodes
       ansible.builtin.command:
         cmd: kubectl get nodes --no-headers -o custom-columns=:.metadata.name
-      delegate_to: "{{ microk8s_designated_host }}"
-      delegate_facts: true
+      when: is_master is defined and ( is_master | bool)
       changed_when: false
       register: microk8s_cluster_node
 
@@ -59,7 +48,7 @@
       when:
         - inventory_hostname not in microk8s_cluster_node.stdout
 
-  when: inventory_hostname != microk8s_designated_host
+  when: is_master is not defined or not ( is_master | bool)
   tags:
     - microk8s
     - microk8s.ha
