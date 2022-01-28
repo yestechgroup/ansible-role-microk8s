@@ -85,7 +85,7 @@ jobs:
       - name: Run Molecule Tests
         uses: bonddim/action-ansible-molecule@stable
         with:
-          moleculle-command-args: --all
+          molecule-command-args: --all
           pip-requirements-file: requirements.txt
           molecule-working-dir: ${{ github.workspace }}
           collection-dir: ${{ github.workspace }}

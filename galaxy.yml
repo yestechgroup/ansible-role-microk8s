@@ -1,3 +1,4 @@
+---
 namespace: "gepaplexx"
 name: "microk8s"
 readme: "README.md"
@@ -10,3 +11,4 @@ dependencies:
 license:
   - "MIT"
 repository: "https://www.github.com/gepaplexx/ansible-role.microk8s"
+...
