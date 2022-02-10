@@ -7,9 +7,7 @@ name: Main
       - main
     tags-ignore:
       - '**'
-defaults:
-  run:
-    working-directory: gepaplexx.microk8s
+
 jobs:
   pre-commit:
     name: pre-commit
@@ -63,10 +61,12 @@ jobs:
           python-version: 3.x
 
       - name: Install Dependencies
+        working-directory: gepaplexx.microk8s
         run: pip3 install -r requirements.txt
 
       - name: Run Molecule tests
         run: molecule test
+        working-directory: gepaplexx.microk8s
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
