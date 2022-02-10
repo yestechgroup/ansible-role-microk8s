@@ -54,6 +54,8 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           FILTER_REGEX_EXCLUDE: '.*.md'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JSCPD: false
+          VALIDATE_GITHUB_ACTIONS: false
 
   yaml-linter:
     name: YAML Linter
