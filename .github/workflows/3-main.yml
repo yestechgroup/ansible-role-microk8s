@@ -116,7 +116,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ failure() }}
     needs:
-      - playbook
+      - release
     steps:
       - name: Notify Slack channel on failure
         uses: rtCamp/action-slack-notify@v2
