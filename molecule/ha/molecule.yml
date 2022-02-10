@@ -2,26 +2,49 @@
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
 platforms:
   - name: node1
-    box: ubuntu/focal64
-    memory: 4096
-    cpus: 2
-    interfaces:
-      - network_name: private_network
-        type: static
-        ip: 192.168.0.1
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${PWD}:/etc/ansible/roles/gepaplexx.microk8s:ro
+      - ${PWD}/library:/root/.ansible/plugins/modules:ro
+    privileged: true
+    pre_build_image: true
+    tty: true
+    environment:
+      container: docker
+    docker_networks:
+      - name: private_network
+        ipam_config:
+          - subnet: "192.168.0.0/16"
+            gateway: "192.168.0.254"
+    networks:
+      - name: private_network
+        ipv4_address: "192.168.0.1"
+
   - name: node2
-    box: ubuntu/focal64
-    memory: 4096
-    cpus: 2
-    interfaces:
-      - network_name: private_network
-        type: static
-        ip: 192.168.0.2
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible:latest"
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${PWD}:/etc/ansible/roles/gepaplexx.microk8s:ro
+      - ${PWD}/library:/root/.ansible/plugins/modules:ro
+    privileged: true
+    pre_build_image: true
+    tty: true
+    environment:
+      container: docker
+    docker_networks:
+      - name: private_network
+        ipam_config:
+          - subnet: "192.168.0.0/16"
+            gateway: "192.168.0.254"
+    networks:
+      - name: private_network
+        ipv4_address: "192.168.0.2"
 provisioner:
   name: ansible
   config_options:
