@@ -4,10 +4,6 @@ name: Pull Request
 'on':
   pull_request:
 
-defaults:
-  run:
-    working-directory: gepaplexx.microk8s
-
 jobs:
   ansible-linter:
     name: Ansible Linter
@@ -77,6 +73,8 @@ jobs:
   molecule:
     name: Molecule
     runs-on: ubuntu-latest
+    run:
+      working-directory: gepaplexx.microk8s
     strategy:
       matrix:
         distro:
