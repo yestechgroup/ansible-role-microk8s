@@ -7,6 +7,7 @@
     loop_var: microk8s_plugin
     label: "{{ microk8s_plugin.key }}"
   when:
+    - is_master is defined and ( is_master | bool)
     - microk8s_plugins is defined
     - microk8s_plugin.value
     - microk8s_plugin.key != "registry"
@@ -33,6 +34,7 @@
     - "'Addon {{ microk8s_plugin.key }} is already disabled'
       not in microk8s_cmd_result.stdout"
   when:
+    - is_master is defined and ( is_master | bool)
     - microk8s_plugins is defined
     - not (microk8s_plugin.value | bool)
     - microk8s_plugin.key != "registry"
@@ -49,6 +51,7 @@
   changed_when:
     - "'Addon registry is already enabled' not in microk8s_cmd_result.stdout"
   when:
+    - is_master is defined and ( is_master | bool)
     - microk8s_plugins is defined
     - microk8s_plugins.registry is defined
     - (microk8s_plugins.registry | bool)
@@ -65,6 +68,7 @@
   changed_when:
     - "'Addon registry is already disabled' not in microk8s_cmd_result.stdout"
   when:
+    - is_master is defined and ( is_master | bool)
     - microk8s_plugins is defined
     - microk8s_plugins.registry is defined
     - not (microk8s_plugins.registry | bool)
@@ -81,6 +85,7 @@
   changed_when:
     - "'Addon dns is already enabled' not in microk8s_cmd_result.stdout"
   when:
+    - is_master is defined and ( is_master | bool)
     - microk8s_plugins is defined
     - microk8s_plugins.dns is defined
     - (microk8s_plugins.dns | bool)

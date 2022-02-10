@@ -7,25 +7,11 @@ name: Develop
       - develop
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: gepaplexx.microk8s
+
 jobs:
-  ansible-linter:
-    name: Ansible Linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install ansible-lint Dependencies
-        run: pip3 install ansible ansible-base ansible-lint
-
-      - name: Lint Code Base with ansible-lint
-        run: ansible-lint
-
   pre-commit:
     name: pre-commit
     runs-on: ubuntu-latest
@@ -54,54 +40,46 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           FILTER_REGEX_EXCLUDE: '.*.md'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  yaml-linter:
-    name: YAML Linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install yamllint Dependencies
-        run: pip3 install yamllint
-
-      - name: Lint Code Base with yamllint
-        run: yamllint .
+          VALIDATE_JSCPD: false
+          VALIDATE_GITHUB_ACTIONS: false
 
   molecule:
     name: Molecule
-    runs-on: macos-10.15
+    runs-on: ubuntu-latest
+    working-directory: gepaplexx.microk8s
+    strategy:
+      matrix:
+        distro:
+          - ubuntu2004
+      fail-fast: false
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          path: gepaplexx.microk8s
 
       - name: Set up Python 3
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
 
-      - name: Install Molecule Dependencies
-        run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: pip3 install -r requirements.txt
 
-      - name: Run Molecule Tests
-        run: molecule test --all
+      - name: Run Molecule tests
+        run: molecule test
         env:
           PY_COLORS: 1
           ANSIBLE_FORCE_COLOR: 1
+          MOLECULE_DISTRO: ${{ matrix.distro }}
 
   pull-request:
     name: Pull Request
     runs-on: ubuntu-latest
     needs:
-      - ansible-linter
       - pre-commit
       - super-linter
-      - yaml-linter
       - molecule
     steps:
       - name: Checkout Code
