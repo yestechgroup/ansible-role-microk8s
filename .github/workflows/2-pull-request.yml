@@ -4,24 +4,11 @@ name: Pull Request
 'on':
   pull_request:
 
+defaults:
+  run:
+    working-directory: gepaplexx.microk8s
+
 jobs:
-  ansible-linter:
-    name: Ansible Linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install ansible-lint Dependencies
-        run: pip3 install ansible ansible-base ansible-lint
-
-      - name: Lint Code Base with ansible-lint
-        run: ansible-lint
 
   pre-commit:
     name: pre-commit
@@ -52,28 +39,10 @@ jobs:
           FILTER_REGEX_EXCLUDE: '.*.md'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  yaml-linter:
-    name: YAML Linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set up Python 3
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install yamllint Dependencies
-        run: pip3 install yamllint
-
-      - name: Lint Code Base with yamllint
-        run: yamllint .
 
   molecule:
     name: Molecule
     runs-on: ubuntu-latest
-    working-directory: gepaplexx.microk8s
     strategy:
       matrix:
         distro:
@@ -106,10 +75,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ failure() }}
     needs:
-      - ansible-linter
       - pre-commit
       - super-linter
-      - yaml-linter
       - molecule
     steps:
       - name: Notify Slack channel on failure
