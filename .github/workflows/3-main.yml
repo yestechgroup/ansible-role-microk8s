@@ -7,7 +7,9 @@ name: Main
       - main
     tags-ignore:
       - '**'
-
+defaults:
+  run:
+    working-directory: gepaplexx.microk8s
 jobs:
   pre-commit:
     name: pre-commit
