@@ -73,8 +73,7 @@ jobs:
   molecule:
     name: Molecule
     runs-on: ubuntu-latest
-    run:
-      working-directory: gepaplexx.microk8s
+    working-directory: gepaplexx.microk8s
     strategy:
       matrix:
         distro:
