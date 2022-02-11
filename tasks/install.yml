@@ -33,18 +33,10 @@
   community.general.snap:
     name: microk8s
     classic: true
+  notify: microk8s ready
   tags:
     - microk8s
     - microk8s.install
-
-- name: Wait for microk8s to be ready
-  ansible.builtin.command:
-    cmd: microk8s.status --wait-ready
-  changed_when: false
-  tags:
-    - notest
-    - microk8s
-    - microk8s.ready
 
 - name: Create kubectl alias
   ansible.builtin.command:

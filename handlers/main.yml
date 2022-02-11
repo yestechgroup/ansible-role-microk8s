@@ -3,4 +3,13 @@
   ansible.builtin.reboot:
   tags:
     - always
+
+- name: microk8s ready
+  ansible.builtin.command:
+    cmd: microk8s.status --wait-ready
+  changed_when: false
+  tags:
+    - notest
+    - microk8s
+    - microk8s.ready
 ...
